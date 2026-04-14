@@ -9,6 +9,7 @@ import Module1Extraction from './components/Module1Extraction';
 import Module2RadarDraw from './components/Module2RadarDraw';
 import Module3TeamBuilder from './components/Module3TeamBuilder';
 import Module4Conclusion from './components/Module4Conclusion';
+import Module5QuizGame from './components/Module5QuizGame';
 import { Hero, CHALLENGES } from './data/gameData';
 
 export default function App() {
@@ -16,12 +17,19 @@ export default function App() {
   const [team, setTeam] = useState<Hero[]>([]);
   const [teamName, setTeamName] = useState<string>('');
   const [currentChallengeId, setCurrentChallengeId] = useState<string>(CHALLENGES[0].id);
+  const [completedStories, setCompletedStories] = useState<string[]>([]);
 
   const currentChallenge = CHALLENGES.find(c => c.id === currentChallengeId) || CHALLENGES[0];
 
   const handleNextStage = (name?: string) => {
     if (name) setTeamName(name);
-    setCurrentStage(prev => Math.min(prev + 1, 4));
+    if (currentStage === 3) {
+      // Moving from stage 3 to 4 means completing a story
+      if (!completedStories.includes(currentChallengeId)) {
+        setCompletedStories(prev => [...prev, currentChallengeId]);
+      }
+    }
+    setCurrentStage(prev => Math.min(prev + 1, 5));
   };
 
   const handleSelectChallenge = (challengeId: string) => {
@@ -29,6 +37,10 @@ export default function App() {
     setTeam([]);
     setTeamName('');
     setCurrentStage(3); // Go directly to team building for the new challenge
+  };
+
+  const handleStartQuiz = () => {
+    setCurrentStage(5);
   };
 
   return (
@@ -106,33 +118,23 @@ export default function App() {
                 challenge={currentChallenge}
                 onRestart={() => setCurrentStage(1)} 
                 onSelectChallenge={handleSelectChallenge}
+                completedStoriesCount={completedStories.length}
+                onStartQuiz={handleStartQuiz}
               />
+            </motion.div>
+          )}
+          {currentStage === 5 && (
+            <motion.div
+              key="stage5"
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="absolute inset-0 p-8"
+            >
+              <Module5QuizGame onComplete={() => setCurrentStage(1)} />
             </motion.div>
           )}
         </AnimatePresence>
       </main>
-
-      {/* Test Panel */}
-      <div className="fixed bottom-4 right-4 z-50 glass-panel p-4 rounded-xl flex flex-col gap-2 border-cyber-purple/50 shadow-[0_0_15px_rgba(176,38,255,0.3)]">
-        <div className="text-xs text-cyber-purple font-bold mb-1 flex justify-between items-center">
-          <span>测试面板 (Test Panel)</span>
-        </div>
-        <div className="flex gap-2">
-          {[1, 2, 3, 4].map(step => (
-            <button
-              key={step}
-              onClick={() => setCurrentStage(step)}
-              className={`px-3 py-1 rounded text-sm font-bold transition-colors ${
-                currentStage === step 
-                  ? 'bg-cyber-purple text-white shadow-[0_0_10px_rgba(176,38,255,0.5)]' 
-                  : 'bg-white/10 hover:bg-white/20 text-gray-300'
-              }`}
-            >
-              关卡 {step}
-            </button>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

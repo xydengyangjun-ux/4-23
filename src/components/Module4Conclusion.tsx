@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import confetti from 'canvas-confetti';
 import { Hero, Challenge, CHALLENGES } from '../data/gameData';
-import { BookOpen, ChevronRight } from 'lucide-react';
+import { BookOpen, ChevronRight, BrainCircuit } from 'lucide-react';
 
 interface Props {
   team: Hero[];
@@ -10,9 +10,11 @@ interface Props {
   challenge: Challenge;
   onRestart: () => void;
   onSelectChallenge: (challengeId: string) => void;
+  completedStoriesCount: number;
+  onStartQuiz: () => void;
 }
 
-export default function Module4Conclusion({ team, teamName, challenge, onRestart, onSelectChallenge }: Props) {
+export default function Module4Conclusion({ team, teamName, challenge, onRestart, onSelectChallenge, completedStoriesCount, onStartQuiz }: Props) {
   const [story, setStory] = useState('');
   const [displayedStory, setDisplayedStory] = useState('');
 
@@ -147,6 +149,20 @@ export default function Module4Conclusion({ team, teamName, challenge, onRestart
             </motion.div>
           ))}
         </div>
+
+        {completedStoriesCount >= 2 && (
+          <motion.button
+            className="w-full mt-6 py-4 bg-gradient-to-r from-cyber-purple to-cyber-blue rounded-xl font-bold text-white flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(176,38,255,0.4)] transition-all"
+            onClick={onStartQuiz}
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+          >
+            <BrainCircuit className="w-5 h-5" />
+            进入知识测验
+          </motion.button>
+        )}
       </motion.div>
     </div>
   );

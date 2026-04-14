@@ -145,6 +145,142 @@ export interface Challenge {
   requiredStats: Record<StatKey, number>;
 }
 
+export interface QuizLevel {
+  id: number;
+  enemyName: string;
+  enemyAvatar: string;
+  enemyDesc: string;
+  targetStat: StatKey;
+  targetValue: number;
+  question: string;
+  options: string[];
+  correctAnswer: number;
+  explanation: string;
+}
+
+export const QUIZ_LEVELS: QuizLevel[] = [
+  {
+    id: 1,
+    enemyName: '华雄',
+    enemyAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=HuaXiong&backgroundColor=ffdfbf',
+    enemyDesc: '董卓麾下猛将，正在阵前搦战，急需一员猛将将其斩杀！',
+    targetStat: 'combat',
+    targetValue: 85,
+    question: '雷达图最适合用来展示什么类型的数据？',
+    options: ['单一变量的趋势变化', '多个维度的综合对比', '各个部分占总体的比例', '地理位置的分布'],
+    correctAnswer: 1,
+    explanation: '雷达图通过多个坐标轴，能够直观地展示一个对象在多个维度上的表现，非常适合进行综合对比。'
+  },
+  {
+    id: 2,
+    enemyName: '王朗',
+    enemyAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=WangLang&backgroundColor=c0aede',
+    enemyDesc: '王朗在阵前大放厥词，需要一位口才极佳的人将其驳倒！',
+    targetStat: 'eloquence',
+    targetValue: 90,
+    question: '在雷达图中，一个数据点距离中心原点越远，代表什么含义？',
+    options: ['该项数值越低', '该项数值越高', '该项数据不重要', '该项数据是负数'],
+    correctAnswer: 1,
+    explanation: '雷达图的中心代表最小值（通常为0），越向外延伸代表数值越大。'
+  },
+  {
+    id: 3,
+    enemyName: '祝家庄迷宫',
+    enemyAvatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=Maze&backgroundColor=000000',
+    enemyDesc: '祝家庄地形复杂，机关重重，需要极高的智谋才能破解阵法！',
+    targetStat: 'intelligence',
+    targetValue: 85,
+    question: '如果一个角色的雷达图呈现出一个非常饱满、正规的五边形，这说明什么？',
+    options: ['他有一项能力极其突出', '他的各项能力非常均衡且都很高', '他的能力很弱', '数据出现了错误'],
+    correctAnswer: 1,
+    explanation: '饱满的正多边形意味着在所有维度上的数值都接近最大值，代表能力均衡且强大。'
+  },
+  {
+    id: 4,
+    enemyName: '时迁的挑战',
+    enemyAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=ShiQian&backgroundColor=b6e3f4',
+    enemyDesc: '鼓上蚤时迁轻功了得，想要抓住他，必须身法比他更灵活！',
+    targetStat: 'agility',
+    targetValue: 80,
+    question: '为什么我们在评价经典名著人物时，引入了雷达图这种工具？',
+    options: ['为了让画面更好看', '为了避免单一视角的偏见，实现多维度的客观评价', '因为古人就是用雷达图的', '为了计算他们的战斗力数值'],
+    correctAnswer: 1,
+    explanation: '人性是复杂的，雷达图能帮我们跳出“好人/坏人”的二元对立，从智、勇、仁、义等多个维度全面客观地评价人物。'
+  },
+  {
+    id: 5,
+    enemyName: '草船借箭的迷雾',
+    enemyAvatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=Fog&backgroundColor=e2e8f0',
+    enemyDesc: '江面上大雾弥漫，想要成功借到十万支箭，除了智谋，还需要极大的运气！',
+    targetStat: 'luck',
+    targetValue: 85,
+    question: '在“三打白骨精”的挑战中，如果只看角色的“武力”值，可能会导致什么后果？',
+    options: ['能更快打败白骨精', '可能会被妖精的伪装欺骗，导致团队内讧', '没有任何影响', '会让唐僧更加高兴'],
+    correctAnswer: 1,
+    explanation: '白骨精善于变化和挑拨离间，只靠武力无法识破伪装，必须结合智谋和辩才才能完美破局。'
+  },
+  {
+    id: 6,
+    enemyName: '吕布',
+    enemyAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=LuBu&backgroundColor=ffdfbf',
+    enemyDesc: '人中吕布，马中赤兔！面对天下无双的猛将，必须全力以赴！',
+    targetStat: 'combat',
+    targetValue: 95,
+    question: '在同一个雷达图中，如果角色A的图形面积完全包裹住了角色B的图形面积，通常意味着什么？',
+    options: ['角色B比角色A强', '角色A在所有评价维度上都优于或等于角色B', '他们俩能力互补', '雷达图画错了'],
+    correctAnswer: 1,
+    explanation: '面积的包裹关系直观地反映了各项数值的全面压制。'
+  },
+  {
+    id: 7,
+    enemyName: '舌战群儒',
+    enemyAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Scholars&backgroundColor=c0aede',
+    enemyDesc: '东吴谋臣如云，想要说服他们抗曹，必须拥有压倒性的辩才！',
+    targetStat: 'eloquence',
+    targetValue: 95,
+    question: '如果组建小队时，两个角色的雷达图形状呈现“凹凸互补”的状态，这支小队会有什么特点？',
+    options: ['团队会经常吵架', '团队的综合能力雷达图会趋于饱满，没有明显短板', '团队的战斗力会下降', '没有任何特殊效果'],
+    correctAnswer: 1,
+    explanation: '互补的雷达图意味着一个人不擅长的领域正是另一个人擅长的，组合在一起能形成完美的团队。'
+  },
+  {
+    id: 8,
+    enemyName: '空城计',
+    enemyAvatar: 'https://api.dicebear.com/7.x/avataaars/svg?seed=SimaYi&backgroundColor=b6e3f4',
+    enemyDesc: '司马懿大军压境，城内空虚，只能依靠极致的智谋和心理战退敌！',
+    targetStat: 'intelligence',
+    targetValue: 95,
+    question: '在数据可视化中，雷达图的每一条从中心向外辐射的轴代表什么？',
+    options: ['时间的变化', '不同的评价维度或变量', '数据的数量', '没有任何意义'],
+    correctAnswer: 1,
+    explanation: '雷达图的每条轴代表一个独立的维度（如武力、智谋等），所有轴共同构成了一个多维评价体系。'
+  },
+  {
+    id: 9,
+    enemyName: '长坂坡救主',
+    enemyAvatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=Army&backgroundColor=ffdfbf',
+    enemyDesc: '曹军百万大军重重包围，想要七进七出，身法和武力缺一不可！',
+    targetStat: 'agility',
+    targetValue: 90,
+    question: '观察诸葛亮的雷达图，哪一项数值通常会最接近图形的边缘（最大值）？',
+    options: ['武艺', '智谋', '身法', '运气'],
+    correctAnswer: 1,
+    explanation: '诸葛亮是智慧的化身，其“智谋”维度必然是满值或接近满值。'
+  },
+  {
+    id: 10,
+    enemyName: '天道轮回',
+    enemyAvatar: 'https://api.dicebear.com/7.x/shapes/svg?seed=Destiny&backgroundColor=000000',
+    enemyDesc: '最终的考验！面对命运的无常，唯有极高的机缘与气运方能化险为夷！',
+    targetStat: 'luck',
+    targetValue: 90,
+    question: '本节课我们学习使用雷达图来分析名著人物，最终的教学目的是什么？',
+    options: ['为了给英雄们排名', '为了学会画图', '培养多维思考的习惯，学会用数据客观、全面地分析复杂事物', '为了玩游戏'],
+    correctAnswer: 2,
+    explanation: '雷达图只是一种工具，真正的目的是培养大家的多维数据思维，拒绝片面标签化，学会全面客观地看待世界。'
+  }
+];
+
 export const CHALLENGES: Challenge[] = [
   {
     id: 'baigujing',
