@@ -1,0 +1,39 @@
+{
+  "entities": {
+    "Team": {
+      "title": "Team",
+      "description": "A team of heroes created by a user",
+      "type": "object",
+      "properties": {
+        "teamName": {
+          "type": "string",
+          "description": "The name given to the team by the user"
+        },
+        "heroIds": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "The IDs of the 4 heroes in the team"
+        },
+        "createdAt": {
+          "type": "timestamp",
+          "description": "When the team was created"
+        },
+        "creatorId": {
+          "type": "string",
+          "description": "The anonymous user ID of the creator"
+        }
+      },
+      "required": ["teamName", "heroIds", "createdAt", "creatorId"]
+    }
+  },
+  "firestore": {
+    "/teams/{teamId}": {
+      "schema": {
+        "$ref": "#/entities/Team"
+      },
+      "description": "Stores user-created teams"
+    }
+  }
+}

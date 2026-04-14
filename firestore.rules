@@ -1,0 +1,76 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: teams
+    // Document ID: auto-generated
+    // Fields:
+    //   - teamName: string (required, length 1-20) - The name given to the team
+    //   - heroIds: list (required, size exactly 4) - The IDs of the heroes
+    //   - createdAt: timestamp (required) - When the team was created
+    //   - creatorId: string (required) - The anonymous user ID of the creator
+    //
+    // ===============================================================
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    function isValidStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+
+    function isValidListSize(field, exactSize) {
+      return request.resource.data[field] is list &&
+        request.resource.data[field].size() == exactSize;
+    }
+
+    // Domain Validators
+    function isValidTeam(data) {
+      return hasOnlyAllowedFields(['teamName', 'heroIds', 'createdAt', 'creatorId']) &&
+             hasRequiredFields(['teamName', 'heroIds', 'createdAt', 'creatorId']) &&
+             isValidStringLength('teamName', 1, 20) &&
+             isValidListSize('heroIds', 4) &&
+             data.createdAt is timestamp &&
+             data.creatorId is string &&
+             data.creatorId == request.auth.uid;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+
+    match /teams/{teamId} {
+      // Anyone can read teams to see the leaderboard
+      allow read: if true;
+      
+      // Only authenticated users can create a team, and it must be valid
+      allow create: if isAuthenticated() && isValidTeam(request.resource.data);
+      
+      // Teams cannot be updated or deleted once created (immutable ledger)
+      allow update, delete: if false;
+    }
+  }
+}
