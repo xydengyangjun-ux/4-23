@@ -11,12 +11,19 @@ interface Props {
 const STAT_KEYS: StatKey[] = ['combat', 'intelligence', 'eloquence', 'agility', 'luck'];
 
 export default function Module2RadarDraw({ onComplete }: Props) {
-  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+  const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem('module2CompletedIds');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [values, setValues] = useState<number[]>([0, 0, 0, 0, 0]);
   const [draggingIndex, setDraggingIndex] = useState<number | null>(null);
   const [showSuccess, setShowSuccess] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    localStorage.setItem('module2CompletedIds', JSON.stringify(Array.from(completedIds)));
+  }, [completedIds]);
 
   const currentHero = HEROES[currentHeroIndex];
   const isAutoMode = completedIds.size < 3; // First 3 heroes are auto-generated

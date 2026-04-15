@@ -8,12 +8,29 @@ interface Props {
 }
 
 export default function Module1Extraction({ onComplete }: Props) {
-  const [completedIds, setCompletedIds] = useState<Set<string>>(new Set());
+  const [completedIds, setCompletedIds] = useState<Set<string>>(() => {
+    const saved = localStorage.getItem('module1CompletedIds');
+    return saved ? new Set(JSON.parse(saved)) : new Set();
+  });
   const [currentHeroIndex, setCurrentHeroIndex] = useState(0);
   const [inputs, setInputs] = useState<Record<StatKey, string>>({
     combat: '', intelligence: '', eloquence: '', agility: '', luck: ''
   });
   const [showSuccess, setShowSuccess] = useState(false);
+  const [isAutoFillUnlocked, setIsAutoFillUnlocked] = useState(false);
+
+  useEffect(() => {
+    localStorage.setItem('module1CompletedIds', JSON.stringify(Array.from(completedIds)));
+  }, [completedIds]);
+
+  useEffect(() => {
+    // 3 minutes (180,000 ms) timer, resets on component mount (not saved to localStorage)
+    const timer = setTimeout(() => {
+      setIsAutoFillUnlocked(true);
+    }, 3 * 60 * 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const currentHero = HEROES[currentHeroIndex];
 
@@ -66,6 +83,23 @@ export default function Module1Extraction({ onComplete }: Props) {
         }
       }, 1500);
     }
+  };
+
+  const handleAutoFill = () => {
+    setInputs({
+      combat: currentHero.stats.combat.toString(),
+      intelligence: currentHero.stats.intelligence.toString(),
+      eloquence: currentHero.stats.eloquence.toString(),
+      agility: currentHero.stats.agility.toString(),
+      luck: currentHero.stats.luck.toString(),
+    });
+    checkCompletion({
+      combat: currentHero.stats.combat.toString(),
+      intelligence: currentHero.stats.intelligence.toString(),
+      eloquence: currentHero.stats.eloquence.toString(),
+      agility: currentHero.stats.agility.toString(),
+      luck: currentHero.stats.luck.toString(),
+    });
   };
 
   // Highlight numbers in bio
@@ -178,6 +212,18 @@ export default function Module1Extraction({ onComplete }: Props) {
             )}
 
             <h2 className="text-xl font-bold text-cyber-green mb-6 text-center">星探档案馆 - 数据录入</h2>
+            
+            {isAutoFillUnlocked && !completedIds.has(currentHero.id) && (
+              <div className="mb-4 flex justify-center">
+                <button
+                  onClick={handleAutoFill}
+                  className="px-4 py-2 bg-cyber-purple/20 border border-cyber-purple text-cyber-purple rounded-lg hover:bg-cyber-purple/40 transition-colors text-sm font-bold"
+                >
+                  一键输入 (Auto Fill)
+                </button>
+              </div>
+            )}
+
             <div className="space-y-4">
               {(Object.keys(STAT_LABELS) as StatKey[]).map((key) => {
                 const isCorrect = parseInt(inputs[key]) === currentHero.stats[key];

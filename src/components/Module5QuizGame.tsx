@@ -11,13 +11,34 @@ interface Props {
 type Phase = 'intro' | 'battle_prep' | 'battling' | 'question' | 'result' | 'game_over';
 
 export default function Module5QuizGame({ onComplete }: Props) {
-  const [currentLevelIndex, setCurrentLevelIndex] = useState(0);
-  const [phase, setPhase] = useState<Phase>('intro');
+  const [currentLevelIndex, setCurrentLevelIndex] = useState(() => {
+    const saved = localStorage.getItem('module5CurrentLevelIndex');
+    return saved ? parseInt(saved, 10) : 0;
+  });
+  const [phase, setPhase] = useState<Phase>(() => {
+    const saved = localStorage.getItem('module5Phase');
+    return (saved as Phase) || 'intro';
+  });
   const [selectedHero, setSelectedHero] = useState<Hero | null>(null);
   const [battleResult, setBattleResult] = useState<'win' | 'lose' | null>(null);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [score, setScore] = useState(0);
+  const [score, setScore] = useState(() => {
+    const saved = localStorage.getItem('module5Score');
+    return saved ? parseInt(saved, 10) : 0;
+  });
   const [battleStep, setBattleStep] = useState<'approach' | 'clash' | 'knockback' | null>(null);
+
+  useEffect(() => {
+    localStorage.setItem('module5CurrentLevelIndex', currentLevelIndex.toString());
+  }, [currentLevelIndex]);
+
+  useEffect(() => {
+    localStorage.setItem('module5Phase', phase);
+  }, [phase]);
+
+  useEffect(() => {
+    localStorage.setItem('module5Score', score.toString());
+  }, [score]);
 
   const cx = 250;
   const cy = 250;
@@ -74,6 +95,14 @@ export default function Module5QuizGame({ onComplete }: Props) {
     } else {
       setPhase('game_over');
     }
+  };
+
+  const handleComplete = () => {
+    // Reset quiz progress when completing and returning to home
+    localStorage.removeItem('module5CurrentLevelIndex');
+    localStorage.removeItem('module5Phase');
+    localStorage.removeItem('module5Score');
+    onComplete();
   };
 
   const renderRadarChart = (hero: Hero) => {
@@ -153,7 +182,7 @@ export default function Module5QuizGame({ onComplete }: Props) {
              "还需要加油哦！回顾一下雷达图的各个维度，不要被单一的标签所局限。"}
           </p>
           <button
-            onClick={onComplete}
+            onClick={handleComplete}
             className="px-8 py-4 bg-cyber-gold text-cyber-navy rounded-xl font-bold text-xl hover:bg-yellow-400 transition-colors shadow-[0_0_15px_rgba(255,215,0,0.5)]"
           >
             返回首页
