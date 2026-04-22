@@ -204,7 +204,7 @@ export default function Module5QuizGame({ onComplete }: Props) {
         </div>
       </div>
 
-      <div className="flex-1 flex gap-8">
+      <div className="flex-1 flex gap-8 min-h-0">
         {/* Left: Battle Area */}
         <div className="flex-1 glass-panel rounded-3xl p-8 flex flex-col relative overflow-hidden">
           <div className="text-center mb-8 flex flex-col items-center">
@@ -329,19 +329,19 @@ export default function Module5QuizGame({ onComplete }: Props) {
         </div>
 
         {/* Right: Question Area */}
-        <div className="w-96 glass-panel rounded-3xl p-6 flex flex-col relative">
+        <div className="w-96 glass-panel rounded-3xl flex flex-col relative overflow-hidden">
           {(phase === 'question' || phase === 'result') ? (
             <motion.div
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
-              className="flex flex-col h-full"
+              className="flex flex-col h-full overflow-y-auto custom-scrollbar p-6"
             >
-              <h3 className="text-xl font-bold text-cyber-purple mb-6 flex items-center gap-2">
+              <h3 className="text-xl flex-shrink-0 font-bold text-cyber-purple mb-6 flex items-center gap-2">
                 <BrainCircuit className="w-6 h-6" /> 知识问答
               </h3>
-              <p className="text-lg mb-8">{level.question}</p>
+              <p className="text-lg flex-shrink-0 mb-8">{level.question}</p>
               
-              <div className="space-y-3 flex-1">
+              <div className="space-y-3 flex-shrink-0">
                 {level.options.map((opt, idx) => {
                   let btnClass = "w-full text-left p-4 rounded-xl border transition-all ";
                   if (selectedAnswer === null) {
@@ -377,7 +377,7 @@ export default function Module5QuizGame({ onComplete }: Props) {
                 <motion.div 
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
-                  className="mt-6"
+                  className="mt-6 flex-shrink-0"
                 >
                   <div className="p-4 bg-cyber-blue/10 border border-cyber-blue/30 rounded-xl mb-4">
                     <div className="font-bold text-cyber-blue mb-1">解析：</div>
